@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -27,6 +28,7 @@ type report struct {
 
 func main() {
 	safeReportCount := 0
+	partTwoCount := 0
 	reportData, err := readDataFile("reports.txt")
 	if err != nil {
 		panic(err)
@@ -38,8 +40,43 @@ func main() {
 		}
 	}
 	fmt.Println(safeReportCount)
+
+	for _, item := range reportData {
+		if safe_report_acceptOne_bad(item.data) {
+			partTwoCount++
+		}
+	}
+	fmt.Println(partTwoCount)
 }
 
+func safe_report_acceptOne_bad(report []int) bool {
+	badcount := 0
+
+	sorted := increasing_decreasing(report)
+	checkDelta := check_delta(report)
+
+	if sorted != "mixed" && checkDelta {
+		return true
+	}
+	currentItem := 1
+	previous := 0
+	if i := 1; i < len(report); i++ {
+		
+		delta := math.Abs(float64(report[i]) - float64(report[i-1]))
+		if delta == 0 && badcount == 1 {
+			return false
+		} else {
+			badcount++
+			currentItem++
+		}
+
+
+	}
+
+	return true
+}
+
+// part two
 func safe_report(report []int) bool {
 
 	// Determine initial direction
@@ -95,4 +132,26 @@ func readDataFile(filename string) (map[int]report, error) {
 
 	}
 	return reports, nil
+}
+
+func increasing_decreasing(data []int) string {
+	if slices.IsSorted(data) {
+		return "increasing"
+	}
+	slices.Reverse(data)
+	if slices.IsSorted(data) {
+		return "decreasing"
+	}
+	return "mixed"
+
+}
+
+func check_delta(data []int) bool {
+	for i := 1; i < len(data); i++ {
+		delta := math.Abs(float64(data[i]) - float64(data[i-1]))
+		if delta > 3 {
+			return false
+		}
+	}
+	return true
 }

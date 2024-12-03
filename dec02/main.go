@@ -41,7 +41,7 @@ func main() {
 }
 
 func safe_report(report []int) bool {
-	badCount := 0
+
 	// Determine initial direction
 	isIncreasing := report[0] < report[len(report)-1]
 
@@ -72,7 +72,7 @@ func readDataFile(filename string) (map[int]report, error) {
 	var lineCount int
 	file, err := os.Open(filename)
 	if err != nil {
-		return reports, fmt.Errorf("Could not open file %v", err)
+		return reports, fmt.Errorf("could not open file %v", err)
 	}
 	fileScanner := bufio.NewScanner(file)
 
@@ -87,7 +87,7 @@ func readDataFile(filename string) (map[int]report, error) {
 		for _, value := range data {
 			dataInt, err := strconv.Atoi(value)
 			if err != nil {
-				fmt.Errorf("Could not convert string %v", value)
+				return reports, fmt.Errorf("could not convert string %v", value)
 			}
 			reportData = append(reportData, dataInt)
 		}
